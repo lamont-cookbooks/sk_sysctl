@@ -5,6 +5,7 @@ action :set do
 
   node.default['sysctl'] ||= {}
   node.default['sysctl'][key] = value
+  execute "sysctl -w #{key}=#{value}"
   new_resource.notifies :create, new_resource.resources(:template => "/etc/sysctl.conf")
 end
 
