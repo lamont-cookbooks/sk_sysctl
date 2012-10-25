@@ -6,5 +6,5 @@ attribute :override, :kind_of => [TrueClass, FalseClass], :default => false
 def initialize(*args)
   super
   @action = :set
-  node['sysctl'] = {}
+  node.default['sysctl'] = {}
 end
