@@ -1,7 +1,6 @@
 
 # no routing on typical servers
 sysctl "net.ipv4.ip_forward = 0"
-sysctl "net.ipv6.conf.all.forwarding = 0"
 
 # no source routing or redirects
 sysctl "net.ipv4.conf.default.rp_filter = 1"
@@ -12,28 +11,31 @@ sysctl "net.ipv4.conf.default.send_redirects = 0"
 sysctl "net.ipv4.conf.all.send_redirects = 0"
 sysctl "net.ipv4.conf.default.accept_source_route = 0"
 sysctl "net.ipv4.conf.all.accept_source_route = 0"
-sysctl "net.ipv6.conf.default.accept_source_route = 0"
-sysctl "net.ipv6.conf.all.accept_source_route = 0"
 sysctl "net.ipv4.conf.default.accept_redirects = 0"
 sysctl "net.ipv4.conf.all.accept_redirects = 0"
-sysctl "net.ipv6.conf.default.accept_redirects = 0"
-sysctl "net.ipv6.conf.all.accept_redirects = 0"
 
-# IPv6-specific section
-sysctl "net.ipv6.conf.default.router_solicitations = 0"
-sysctl "net.ipv6.conf.all.router_solicitations = 0"
-sysctl "net.ipv6.conf.default.accept_ra_rtr_pref = 0"
-sysctl "net.ipv6.conf.all.accept_ra_rtr_pref = 0"
-sysctl "net.ipv6.conf.default.accept_ra_pinfo = 0"
-sysctl "net.ipv6.conf.all.accept_ra_pinfo = 0"
-sysctl "net.ipv6.conf.default.accept_ra_defrtr = 0"
-sysctl "net.ipv6.conf.all.accept_ra_defrtr = 0"
-sysctl "net.ipv6.conf.default.autoconf = 0"
-sysctl "net.ipv6.conf.all.autoconf = 0"
-sysctl "net.ipv6.conf.default.dad_transmits = 0"
-sysctl "net.ipv6.conf.all.dad_transmits = 0"
-sysctl "net.ipv6.conf.default.max_addresses = 1"
-sysctl "net.ipv6.conf.all.max_addresses = 1"
+if File.exists?("/proc/sys/net/ipv6")
+  # IPv6-specific section
+  sysctl "net.ipv6.conf.all.forwarding = 0"
+  sysctl "net.ipv6.conf.default.accept_redirects = 0"
+  sysctl "net.ipv6.conf.all.accept_redirects = 0"
+  sysctl "net.ipv6.conf.default.accept_source_route = 0"
+  sysctl "net.ipv6.conf.all.accept_source_route = 0"
+  sysctl "net.ipv6.conf.default.router_solicitations = 0"
+  sysctl "net.ipv6.conf.all.router_solicitations = 0"
+  sysctl "net.ipv6.conf.default.accept_ra_rtr_pref = 0"
+  sysctl "net.ipv6.conf.all.accept_ra_rtr_pref = 0"
+  sysctl "net.ipv6.conf.default.accept_ra_pinfo = 0"
+  sysctl "net.ipv6.conf.all.accept_ra_pinfo = 0"
+  sysctl "net.ipv6.conf.default.accept_ra_defrtr = 0"
+  sysctl "net.ipv6.conf.all.accept_ra_defrtr = 0"
+  sysctl "net.ipv6.conf.default.autoconf = 0"
+  sysctl "net.ipv6.conf.all.autoconf = 0"
+  sysctl "net.ipv6.conf.default.dad_transmits = 0"
+  sysctl "net.ipv6.conf.all.dad_transmits = 0"
+  sysctl "net.ipv6.conf.default.max_addresses = 1"
+  sysctl "net.ipv6.conf.all.max_addresses = 1"
+end
 
 # synflood settings
 sysctl "net.ipv4.tcp_syncookies = 1"
