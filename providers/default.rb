@@ -7,7 +7,9 @@ action :set do
   node.default['sysctl'][key] = value
   re = /^#{key} = #{value.gsub(/\s+/, "\\s+")}$/
   unless re.match(`sysctl #{key}`.chomp)
-    execute "sysctl -w '#{key}=#{value}'"
+    if new_resource.immediately
+      execute "sysctl -w '#{key}=#{value}'"
+    end
     new_resource.notifies :create, new_resource.resources(:template => "/etc/sysctl.conf")
   end
 end

@@ -1,7 +1,7 @@
 actions :set
 
 attribute :expr, :kind_of => String, :name_attribute => true
-attribute :override, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :immediately, :kind_of => [TrueClass, FalseClass], :default => false
 
 def initialize(*args)
   super
