@@ -1,6 +1,6 @@
 
 # no routing on typical servers
-sysctl "net.ipv4.ip_forward = 0"
+sysctl "net.ipv4.ip_forward = 1"
 
 # no source routing or redirects
 sysctl "net.ipv4.conf.default.rp_filter = 1"
