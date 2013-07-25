@@ -4,8 +4,13 @@ define :sysctl, :compiletime => false  do
   params[:name] =~ /(\S+)\s*=\s*(.+)/
   key, value = $1, $2
 
-  node.default['sysctl'] ||= {}
-  node.default['sysctl'][key] = value
+
+  key_array = key.split(/\./)
+#  hash = {}
+  last = {}
+#  key_array.inject(hash) { |h, k| last = h; h[k] = {}; h[k] }
+  key_array.inject(node.default[:sysctl]) { |h, k| last = h; h[k] ||= {}; h[k] }
+  last[key_array.pop] = value
 
   # set compiletime to true to force early setting of sysctl values before resources converge
 
@@ -17,21 +22,38 @@ define :sysctl, :compiletime => false  do
     end.run_action(:run)
   end
 
+  reload_command =
+    case node['platform_family']
+    when "debian"
+      "/etc/init.d/procps start"
+    else
+      "/sbin/sysctl -p"
+    end
+
+  template_path =
+    case node['platform_family']
+    when "debian"
+      "/etc/sysctl.d/68-chef-attributes.conf"
+    else
+      "/etc/sysctl.conf"
+    end
+
   # only define the resources once (avoiding CHEF-3694)
 
   begin
     resources(:execute => "sysctl_definition_reload_etc_sysctl")
   rescue Chef::Exceptions::ResourceNotFound
     execute "sysctl_definition_reload_etc_sysctl" do
-      command "/sbin/sysctl -p"
+      command reload_command
       action :nothing
     end
   end
 
   t = begin
-    resources(:template => "/etc/sysctl.conf")
+    resources(:template => "sysctl_template_file")
   rescue Chef::Exceptions::ResourceNotFound
-    template "/etc/sysctl.conf" do
+    template "sysctl_template_file" do
+      path template_path
       source "sysctl.conf.erb"
       cookbook "sysctl"
       variables({
