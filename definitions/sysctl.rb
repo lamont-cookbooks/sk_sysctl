@@ -55,7 +55,7 @@ define :sysctl, :compiletime => false  do
     template "sysctl_template_file" do
       path template_path
       source "sysctl.conf.erb"
-      cookbook "sysctl"
+      cookbook "sk_sysctl"
       variables({
         :sysctl => {}
       })
