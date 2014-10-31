@@ -4,7 +4,6 @@ define :sysctl, :compiletime => false  do
   params[:name] =~ /(\S+)\s*=\s*(.+)/
   key, value = $1, $2
 
-
   key_array = key.split(/\./)
 #  hash = {}
   last = {}
@@ -25,7 +24,7 @@ define :sysctl, :compiletime => false  do
   reload_command =
     case node['platform_family']
     when "debian"
-      "/etc/init.d/procps start"
+      "cat /etc/sysctl.d/*.conf /etc/sysctl.conf | sysctl -e -p -"
     else
       "/sbin/sysctl -p"
     end
@@ -66,4 +65,3 @@ define :sysctl, :compiletime => false  do
   t.variables[:sysctl][key] = value
 
 end
-
