@@ -1,5 +1,4 @@
-
-define :sysctl, :compiletime => false  do
+define :sysctl, :compiletime => false do # ~FC015
 
   params[:name] =~ /(\S+)\s*=\s*(.+)/
   key, value = $1, $2
@@ -8,7 +7,7 @@ define :sysctl, :compiletime => false  do
 #  hash = {}
   last = {}
 #  key_array.inject(hash) { |h, k| last = h; h[k] = {}; h[k] }
-  key_array.inject(node.default[:sysctl]) { |h, k| last = h; h[k] ||= {}; h[k] }
+  key_array.inject(node.default['sysctl']) { |h, k| last = h; h[k] ||= {}; h[k] }
   last[key_array.pop] = value
 
   # set compiletime to true to force early setting of sysctl values before resources converge
@@ -17,7 +16,7 @@ define :sysctl, :compiletime => false  do
     re = /^#{key} = #{value.gsub(/\s+/, "\\s+")}$/
     execute "sysctl -w '#{key}=#{value}'" do
       action :nothing
-      not_if { re.match(`sysctl #{key}`.chomp) }
+      not_if { re.match(`sysctl #{key}`.chomp) }  # ~FC048
     end.run_action(:run)
   end
 
